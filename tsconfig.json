@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-  ],
+, "app/ui/user.jsx", "app/ui/register.tsx", "app/ui/UserSlot.jsx", "app/page.jsx", "app/page.jsx"  ],
   "exclude": ["node_modules"]
 }
