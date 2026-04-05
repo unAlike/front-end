@@ -34,7 +34,7 @@ export default function App() {
   //     { name: "Maddie", empNum: 241150, startTime: 1300, endTime: 2200, lunchStart: 1800, lunchEnd: 1900 }
   //   ]
   // });
-  const [users, setUsers] = useState({
+  const [users, setUsers] = useState<any>({
     241141: { name: "Ryan", empNum: 241141, startTime: 1300, endTime: 2200, lunchStart: 1800, lunchEnd: 1900 },
     241146: { name: "Bill", empNum: 241146, startTime: 1300, endTime: 2200, lunchStart: 1800, lunchEnd: 1900 },
     241147: { name: "Colten", empNum: 241147, startTime: 630, endTime: 1430, lunchStart: 1000, lunchEnd: 1030 },
