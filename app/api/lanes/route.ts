@@ -4,7 +4,7 @@ import { text } from 'stream/consumers';
 
 export async function GET(request: NextRequest) {
     try {
-        const result = await get('lanes.json', { access: 'private', token: process.env.BLOB_READ_WRITE_TOKEN, headers:{'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0'} });
+        const result = await get('lanes.json', { access: 'private', token: process.env.BLOB_READ_WRITE_TOKEN, headers:{'Cache-Control': 'private, no-cache, no-store, max-age=0, must-revalidate', 'Pragma': 'no-cache', 'Expires': '0'} });
 
         if (result?.statusCode !== 200) {
             return new NextResponse('Not found', { status: 404 });
