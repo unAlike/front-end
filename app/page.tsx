@@ -60,7 +60,7 @@ export default function App() {
     const fetchData = async () => {
       const response = await fetch('/api/lanes', {
         method: 'GET',
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store, must-revalidate, max-age=0', 'Pragma': 'no-cache', 'Expires': '0' }
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'private, no-cache, no-store, must-revalidate, max-age=0', 'Pragma': 'no-cache', 'Expires': '0' }
       });
       // console.log("Response: ", response)
       const url = await response.json();
