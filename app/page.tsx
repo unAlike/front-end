@@ -55,7 +55,7 @@ export default function App() {
         setLanes((lanes) => move(lanes, event));
       }}
     >
-      <div className="Root">
+      <div className="Root max-w-full">
         {Object.entries(lanes).map(([registerId, lanes], index) => (
           <Register key={registerId} id={registerId} index={index} isOpen={true}>
             {lanes.map((user, index) => {

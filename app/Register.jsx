@@ -32,8 +32,11 @@ export function Register({ children, id, index, isOpen }) {
     // }
   }
     return (
-      <div className={`Register ${hasChildren() ? "bg-green-500" : "bg-gray-600"} flex justify-start grow h-10 m-2 min-w-10 border-2`} ref={ref} onClick={changeColor}>
-        <h1 className='p-1 float-left w-1/4'>{id}</h1>{children}
+    <div className={`Register ${hasChildren() ? "bg-green-500" : "bg-gray-600"} text-center`}>
+    <h1 className='p-1 float-left w-18'>{id}</h1>
+      <div className={`Register ${hasChildren() ? "bg-green-500" : "bg-gray-600"} flex flex-wrap justify-start grow m-1 min-h-10`} ref={ref} onClick={changeColor}>
+        {children}
+      </div>
       </div>
     );
 
