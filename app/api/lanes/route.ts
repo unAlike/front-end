@@ -9,8 +9,8 @@ export async function GET(request: NextRequest) {
         if (result?.statusCode !== 200) {
             return new NextResponse('Not found', { status: 404 });
         }
-
-        const streamText = await text(result.stream as ReadableStream<any>);
+        //@ts-ignore
+        const streamText = await text(result.stream);
         const data = JSON.parse(streamText);
         console.log("Fetched lanes data: ", data);
 
