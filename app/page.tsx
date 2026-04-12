@@ -73,12 +73,6 @@ useEffect(() => {
   const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY || '', { 
     cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER || '',
     authEndpoint: '/api/pusher/auth',
-    auth: {
-      headers: {
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      }
-    }
   });
   const channel = pusher.subscribe('lanes-channel'); 
   channel.bind('lanes-updated', (data: any) => {

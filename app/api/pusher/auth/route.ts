@@ -9,6 +9,19 @@ const pusher = new Pusher({
   useTLS: true,
 });
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: corsHeaders,
+  });
+}
+
 async function parseAuthRequest(request: NextRequest) {
   const contentType = request.headers.get('content-type') || '';
 
@@ -44,13 +57,21 @@ export async function POST(request: NextRequest) {
 
     if (!process.env.PUSHER_APP_ID || !process.env.PUSHER_KEY || !process.env.PUSHER_SECRET || !process.env.PUSHER_CLUSTER) {
       console.error('Missing Pusher server env vars');
-      return NextResponse.json({ error: 'Pusher server configuration is incomplete' }, { status: 500 });
+      return NextResponse.json({ error: 'Pusher server configuration is incomplete' }, {
+        status: 500,
+        headers: corsHeaders,
+      });
     }
 
     const auth = pusher.authenticate(socketId, channelName);
-    return NextResponse.json(auth);
+    return NextResponse.json(auth, {
+      headers: corsHeaders,
+    });
   } catch (error) {
     console.error('Pusher auth route error:', error);
-    return NextResponse.json({ error: 'Failed to authenticate channel' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to authenticate channel' }, {
+      status: 500,
+      headers: corsHeaders,
+    });
   }
 }
