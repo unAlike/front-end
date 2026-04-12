@@ -75,7 +75,8 @@ useEffect(() => {
     authEndpoint: '/api/pusher/auth',
     auth: {
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
       }
     }
   });
