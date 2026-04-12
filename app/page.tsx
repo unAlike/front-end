@@ -9,7 +9,6 @@ import './styles.css';
 import Pusher from 'pusher-js';
 
 export default function App() {
-  let pusher: Pusher | null = null;
   const [count, setCount] = useState(0);
   const [lanes, setLanes] = useState({
     1: ["241141"],
@@ -54,38 +53,35 @@ export default function App() {
     const { url } = await response.json();
     return url;
   };
+  const fetchData = async () => {
+
+    const response = await fetch('/api/lanes', {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'private, no-cache, no-store, must-revalidate, max-age=0', 'Pragma': 'no-cache', 'Expires': '0' }
+    });
+    // console.log("Response: ", response)
+    const url = await response.json();
+    // console.log("Fetched lanes URL: ", url);
+    if (url) setLanes(JSON.parse(url))
+  }
 
   useEffect(() => {
-    const fetchData = async () => {
-
-      pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY || '', {
-        cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER || '',
-      });
-
-      const response = await fetch('/api/lanes', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'private, no-cache, no-store, must-revalidate, max-age=0', 'Pragma': 'no-cache', 'Expires': '0' }
-      });
-      // console.log("Response: ", response)
-      const url = await response.json();
-      // console.log("Fetched lanes URL: ", url);
-      if (url) setLanes(JSON.parse(url))
-
-      // Subscribe to Pusher channel after pusher is initialized
-      let channel = pusher.subscribe('lanes-channel');
-      // Listen for the 'lanes-updated' event
-      channel.bind('lanes-updated', function (data: any) {
-        console.log('Lanes updated event received:', data);
-        // Update lanes state when the event is received
-        fetchData();
-      });
-    }
-
     fetchData();
-
   }, []);
 
-
+useEffect(() => {
+  const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY || '', { cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER || '' });
+  const channel = pusher.subscribe('lanes-channel'); 
+  channel.bind('lanes-updated', (data: any) => {
+    console.log('Lanes updated event received:', data);  
+    fetchData();
+     
+  });
+  return () => {
+    channel.unbind_all();
+    channel.unsubscribe();
+  };
+}, []);
 
   return (
     <DragDropProvider
