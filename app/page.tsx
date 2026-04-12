@@ -69,7 +69,7 @@ export default function App() {
       console.log('Running periodic task...');
       fetchData();
       setCount((prev) => prev + 1);
-    }, 2000);
+    }, 10000);
     fetchData();
 
   }, []);
