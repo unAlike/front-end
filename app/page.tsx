@@ -70,7 +70,15 @@ export default function App() {
   }, []);
 
 useEffect(() => {
-  const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY || '', { cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER || '' });
+  const pusher = new Pusher(process.env.NEXT_PUBLIC_PUSHER_KEY || '', { 
+    cluster: process.env.NEXT_PUBLIC_PUSHER_CLUSTER || '',
+    authEndpoint: '/api/pusher/auth',
+    auth: {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }
+  });
   const channel = pusher.subscribe('lanes-channel'); 
   channel.bind('lanes-updated', (data: any) => {
     console.log('Lanes updated event received:', data);  
