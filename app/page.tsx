@@ -44,16 +44,16 @@ export default function App() {
     241150: { name: "Maddie", empNum: 241150, startTime: 1300, endTime: 2200, lunchStart: 1800, lunchEnd: 1900 }
   });
   const updateLanes = async () => {
-    const intervalId = setInterval(() => {
-      console.log('Running periodic task...');
-      setCount((prev) => prev + 1);
-    }, 5000);
     const response = await fetch('/api/lanes', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: JSON.stringify(lanes), token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN })
     });
     const { url } = await response.json();
+
+    // Broadcast a message to other tabs to update lanes in real-time
+    const channel = new BroadcastChannel('lanes_channel');
+    channel.postMessage({ type: 'update_lanes' });
   };
 
   useEffect(() => {
@@ -69,6 +69,12 @@ export default function App() {
     }
     fetchData();
 
+    // Listen for messages from other tabs to update lanes in real-time
+    const channel = new BroadcastChannel('lanes_channel');
+    channel.onmessage = (event) => {
+      console.log('Received message:', event.data);
+      fetchData();
+    };
   }, []);
 
 
@@ -93,8 +99,8 @@ export default function App() {
         {Object.entries(lanes).map(([registerId, lanes], index) => (
           <Register key={registerId} id={registerId} index={index} isOpen={true}>
             {lanes.map != null && lanes.map((user, index) => {
-              console.log(user)
-              console.log(registerId, users[user])
+              // console.log(user)
+              // console.log(registerId, users[user])
               return (
                 <User
                   key={user}
