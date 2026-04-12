@@ -50,10 +50,6 @@ export default function App() {
       body: JSON.stringify({ data: JSON.stringify(lanes), token: process.env.NEXT_PUBLIC_BLOB_READ_WRITE_TOKEN })
     });
     const { url } = await response.json();
-
-    // Broadcast a message to other tabs to update lanes in real-time
-    const channel = new BroadcastChannel('lanes_channel');
-    channel.postMessage({ type: 'update_lanes' });
   };
 
   useEffect(() => {
@@ -64,17 +60,18 @@ export default function App() {
       });
       // console.log("Response: ", response)
       const url = await response.json();
-      console.log("Fetched lanes URL: ", url);
+      // console.log("Fetched lanes URL: ", url);
       if (url) setLanes(JSON.parse(url))
     }
+
+    // THIS IS BAD CHANGE THIS TO SOCKETS OR SOMETHING LATER PLEASE
+    const intervalId = setInterval(() => {
+      console.log('Running periodic task...');
+      fetchData();
+      setCount((prev) => prev + 1);
+    }, 2000);
     fetchData();
 
-    // Listen for messages from other tabs to update lanes in real-time
-    const channel = new BroadcastChannel('lanes_channel');
-    channel.onmessage = (event) => {
-      console.log('Received message:', event.data);
-      fetchData();
-    };
   }, []);
 
 
