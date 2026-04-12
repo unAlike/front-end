@@ -1,14 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { put, list, get, del } from "@vercel/blob";
 import { text } from 'stream/consumers';
+import Pusher from 'pusher';
 
+const pusher = new Pusher({
+    appId: process.env.app_id || '',
+    key: process.env.key || '',
+    secret: process.env.secret || '',
+    cluster: process.env.cluster || '',
+    useTLS: true,
+});
 
 export async function GET(request: NextRequest) {
     try {
         //List all blobs
         const listResult = await list();
         //Filter all blobs that start with 'lanes/' and end with '.json'
-        let lanesList = listResult.blobs.filter((item)=>{
+        let lanesList = listResult.blobs.filter((item) => {
             return typeof item?.pathname === 'string' && item.pathname.startsWith('lanes/') && item.pathname.endsWith('.json');
         })
         //Get the latest blob data based on the timestamp in the filename
@@ -26,9 +34,9 @@ export async function GET(request: NextRequest) {
             },
         });
 
-        //Delete all other blobs except the latest one to save storage space
+        // Delete all other blobs except the latest one to save storage space
         for (const item of lanesList) {
-            if (item.pathname !== latestBlob.pathname) {   
+            if (item.pathname !== latestBlob.pathname) {
                 await del(item.pathname);
             }
         }
@@ -53,6 +61,14 @@ export async function PUT(request: NextRequest) {
         const { data, token } = await request.json();
         console.log("Date: " + Date.now().toString());
         const { url } = await put(`lanes/${Date.now().toString()}.json`, JSON.stringify(data), { access: 'private', token: process.env.BLOB_READ_WRITE_TOKEN, allowOverwrite: true });
+
+        try {
+            await pusher.trigger('lanes-channel', 'lanes-updated', {
+                message: 'Lanes updated'
+            });
+        } catch (err) {
+            console.error('Error triggering Pusher event:', err);
+        }
 
         return NextResponse.json({ message: 'Item updated successfully', url }, { status: 200 });
     } catch (error) {
