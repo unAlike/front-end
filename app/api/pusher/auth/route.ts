@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import Pusher from 'pusher';
 
 const pusher = new Pusher({
-  appId: process.env.PUSHER_APP_ID || '',
-  key: process.env.PUSHER_KEY || '',
-  secret: process.env.PUSHER_SECRET || '',
-  cluster: process.env.PUSHER_CLUSTER || '',
+  appId: process.env.app_id || '',
+  key: process.env.key || '',
+  secret: process.env.secret || '',
+  cluster: process.env.cluster || '',
   useTLS: true,
 });
 
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing socket_id or channel_name' }, { status: 400 });
     }
 
-    if (!process.env.PUSHER_APP_ID || !process.env.PUSHER_KEY || !process.env.PUSHER_SECRET || !process.env.PUSHER_CLUSTER) {
+    if (!process.env.app_id || !process.env.key || !process.env.secret || !process.env.cluster) {
       console.error('Missing Pusher server env vars');
       return NextResponse.json({ error: 'Pusher server configuration is incomplete' }, {
         status: 500,
